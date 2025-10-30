@@ -77,6 +77,9 @@ public class ChatController : ControllerBase
 
         try
         {
+            if (request == null)
+                return BadRequest("Request body is required");
+
             if (string.IsNullOrWhiteSpace(request.DeviceId))
                 return BadRequest("Device ID is required");
 
@@ -613,7 +616,7 @@ public class ChatController : ControllerBase
     /// <param name="cancellationToken">Cancellation token</param>
     [HttpPost("feedback/{interactionId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> SubmitFeedback(
+    public Task<IActionResult> SubmitFeedback(
         string interactionId,
         [FromBody] FeedbackDto feedback,
         CancellationToken cancellationToken)
@@ -625,7 +628,7 @@ public class ChatController : ControllerBase
             interactionId,
             feedback.Rating);
 
-        return Ok();
+        return Task.FromResult<IActionResult>(Ok());
     }
 
     /// <summary>

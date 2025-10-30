@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -519,7 +520,7 @@ public class AuditLogger : IAuditLogger, IDisposable
     /// </summary>
     private async IAsyncEnumerable<AuditLogEntry> ReadLogEntriesAsync(
         string logFilePath,
-        CancellationToken cancellationToken)
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         Stream fileStream;
 

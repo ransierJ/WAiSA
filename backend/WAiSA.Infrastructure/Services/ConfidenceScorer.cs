@@ -188,7 +188,7 @@ public class ConfidenceScorer : IConfidenceScorer
         };
     }
 
-    private async Task<ConfidenceScore> ScoreLLMResponseAsync(
+    private Task<ConfidenceScore> ScoreLLMResponseAsync(
         string query,
         string response,
         Dictionary<string, object>? metadata)
@@ -213,7 +213,7 @@ public class ConfidenceScorer : IConfidenceScorer
         var threshold = 0.75;
         var meetsThreshold = confidence >= threshold;
 
-        return new ConfidenceScore
+        return Task.FromResult(new ConfidenceScore
         {
             Source = SourceType.LLM,
             Score = Math.Round(confidence, 3),
@@ -230,20 +230,20 @@ public class ConfidenceScorer : IConfidenceScorer
                 { "ConversationalBonus", conversationalBonus },
                 { "ResponseLength", response.Length }
             }
-        };
+        });
     }
 
-    public async Task<ConflictAnalysis> DetectConflictsAsync(
+    public Task<ConflictAnalysis> DetectConflictsAsync(
         List<(SourceType SourceType, string Response)> responses)
     {
         if (responses.Count < 2)
         {
-            return new ConflictAnalysis
+            return Task.FromResult(new ConflictAnalysis
             {
                 HasConflicts = false,
                 Severity = ConflictSeverity.Low,
                 RecommendedStrategy = ConflictResolutionStrategy.PreferHighestConfidence
-            };
+            });
         }
 
         _logger.LogInformation("Detecting conflicts between {Count} source responses", responses.Count);
@@ -288,7 +288,7 @@ public class ConfidenceScorer : IConfidenceScorer
         var hasConflicts = conflicts.Any();
         var severity = DetermineSeverity(conflicts, similarityScores);
 
-        return new ConflictAnalysis
+        return Task.FromResult(new ConflictAnalysis
         {
             HasConflicts = hasConflicts,
             Severity = severity,
@@ -298,7 +298,7 @@ public class ConfidenceScorer : IConfidenceScorer
             RecommendedStrategy = hasConflicts
                 ? ConflictResolutionStrategy.PreferMicrosoftDocs
                 : ConflictResolutionStrategy.PreferHighestConfidence
-        };
+        });
     }
 
     public string ResolveConflict(ConflictAnalysis conflict, (SourceType SourceType, string Response) tieBreaker)

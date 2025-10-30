@@ -11,7 +11,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         _logger = logger;
     }
 
-    public async ValueTask<bool> TryHandleAsync(
+    public ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
@@ -30,6 +30,6 @@ public class GlobalExceptionHandler : IExceptionHandler
         }
 
         // Return false to allow the default exception handler to continue processing
-        return false;
+        return ValueTask.FromResult(false);
     }
 }

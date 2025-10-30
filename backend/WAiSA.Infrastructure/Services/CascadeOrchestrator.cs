@@ -597,7 +597,7 @@ public class CascadeOrchestrator : ICascadeOrchestrator
         }
     }
 
-    public async Task<CascadeMetrics> GetMetricsAsync()
+    public Task<CascadeMetrics> GetMetricsAsync()
     {
         var avgExecutionTimes = new Dictionary<CascadeStage, double>();
         foreach (var stage in _executionTimes.Keys)
@@ -605,7 +605,7 @@ public class CascadeOrchestrator : ICascadeOrchestrator
             avgExecutionTimes[stage] = GetAverageExecutionTime(stage);
         }
 
-        return new CascadeMetrics
+        return Task.FromResult(new CascadeMetrics
         {
             TotalOperations = _totalOperations,
             StoppedAtStage = new Dictionary<CascadeStage, long>(_stoppedAtStage),
@@ -615,7 +615,7 @@ public class CascadeOrchestrator : ICascadeOrchestrator
             MSDocsTieBreakerUsed = _msDocsTieBreakerUsed,
             SuccessRate = _totalOperations > 0 ? 0.95 : 0.0, // Placeholder
             CollectionPeriod = TimeSpan.FromHours(1) // Placeholder
-        };
+        });
     }
 
     private CascadeConfiguration BuildConfiguration(IConfiguration configuration)

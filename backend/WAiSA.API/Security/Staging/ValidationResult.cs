@@ -16,12 +16,12 @@ namespace WAiSA.API.Security.Staging
         /// <summary>
         /// Gets the SHA256 checksum of the staged script.
         /// </summary>
-        public string Checksum { get; }
+        public string? Checksum { get; }
 
         /// <summary>
         /// Gets the full path to the staged script file.
         /// </summary>
-        public string StagedFilePath { get; }
+        public string? StagedFilePath { get; }
 
         /// <summary>
         /// Gets the collection of validation errors, if any.
@@ -45,8 +45,8 @@ namespace WAiSA.API.Security.Staging
 
         private ValidationResult(
             bool isValid,
-            string checksum,
-            string stagedFilePath,
+            string? checksum,
+            string? stagedFilePath,
             IReadOnlyList<string> errors,
             IReadOnlyList<string> warnings,
             long fileSizeBytes)
@@ -72,7 +72,7 @@ namespace WAiSA.API.Security.Staging
             string checksum,
             string stagedFilePath,
             long fileSizeBytes,
-            IReadOnlyList<string> warnings = null)
+            IReadOnlyList<string>? warnings = null)
         {
             return new ValidationResult(
                 isValid: true,
