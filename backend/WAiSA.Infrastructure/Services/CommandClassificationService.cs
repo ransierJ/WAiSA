@@ -153,13 +153,12 @@ public class CommandClassificationService : ICommandClassificationService
         }
 
         // Default: Medium risk, requires approval
-        // TEMPORARY: Disable approval for testing
         return new CommandClassification
         {
-            RequiresApproval = false,  // Changed from true to false for testing
+            RequiresApproval = true,
             RiskLevel = RiskLevel.Medium,
             Category = GetCommandCategory(command),
-            Reasoning = "Unrecognized command pattern - auto-approved for testing",
+            Reasoning = "Unrecognized command pattern - defaulting to Medium risk with approval required",
             IsDestructive = false,
             SuggestedTimeoutSeconds = 300
         };
