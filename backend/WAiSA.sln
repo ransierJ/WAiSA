@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.Infrastructure", "WAi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.Shared", "WAiSA.Shared\WAiSA.Shared.csproj", "{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.Tests", "WAiSA.Tests\WAiSA.Tests.csproj", "{4E60013E-0273-44D1-983B-0205E81B21DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E60013E-0273-44D1-983B-0205E81B21DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E60013E-0273-44D1-983B-0205E81B21DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E60013E-0273-44D1-983B-0205E81B21DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E60013E-0273-44D1-983B-0205E81B21DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
