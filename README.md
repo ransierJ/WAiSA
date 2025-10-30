@@ -6,6 +6,7 @@ WAiSA is an intelligent assistant designed to help Windows system administrators
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![Azure](https://img.shields.io/badge/Azure-Cloud-0078D4?logo=microsoft-azure)](https://azure.microsoft.com/)
+[![Build Status](https://github.com/ransierJ/WAiSA/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/ransierJ/WAiSA/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Features
