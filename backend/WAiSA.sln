@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.API", "WAiSA.API\WAiSA.API.csproj", "{0A60178D-F7FD-47D4-BADA-E3D73FAAE600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.Core", "WAiSA.Core\WAiSA.Core.csproj", "{2F39AEF8-C447-4EEC-9C18-30700709BBE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.Infrastructure", "WAiSA.Infrastructure\WAiSA.Infrastructure.csproj", "{D23DDD43-350F-46C0-951C-7F9131E0B076}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAiSA.Shared", "WAiSA.Shared\WAiSA.Shared.csproj", "{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A60178D-F7FD-47D4-BADA-E3D73FAAE600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A60178D-F7FD-47D4-BADA-E3D73FAAE600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A60178D-F7FD-47D4-BADA-E3D73FAAE600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A60178D-F7FD-47D4-BADA-E3D73FAAE600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F39AEF8-C447-4EEC-9C18-30700709BBE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F39AEF8-C447-4EEC-9C18-30700709BBE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F39AEF8-C447-4EEC-9C18-30700709BBE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F39AEF8-C447-4EEC-9C18-30700709BBE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D23DDD43-350F-46C0-951C-7F9131E0B076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D23DDD43-350F-46C0-951C-7F9131E0B076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D23DDD43-350F-46C0-951C-7F9131E0B076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D23DDD43-350F-46C0-951C-7F9131E0B076}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89C4CAE1-3207-46C9-A5F6-8574A8F3D29E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,216 @@
+# WAiSA (Workplace AI System Assistant) - Git Ignore File
+
+# ============================================================================
+# Claude Code & AI Agent Specific Files - DO NOT COMMIT
+# ============================================================================
+.claude/
+.claude-flow/
+.swarm/
+.hive-mind/
+claude-flow
+claude-code
+.claude-code/
+.mcp.json
+claude-flow.config.json
+memory/
+coordination/
+agent/
+*.claude-session
+*.claude-mem
+.claude_history
+hive-mind-prompt-*.txt
+
+# ============================================================================
+# Azure Deployment & Secrets - DO NOT COMMIT
+# ============================================================================
+infra/deployment-output.json
+infra/deployment-outputs.txt
+infra/*.parameters.json
+infrastructure/deployment-credentials.txt
+infrastructure/sql-password.txt
+infrastructure/deployment-output.json
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Azure publish profiles
+*.PublishSettings
+*.pubxml
+*.pubxml.user
+
+# ============================================================================
+# .NET / C# Build Outputs
+# ============================================================================
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# ============================================================================
+# Logs, Diagnostic Files & Archives
+# ============================================================================
+*.zip
+*.tar.gz
+*.rar
+*.7z
+LogFiles/
+logs/
+*.log
+
+# Specific log files in backend
+backend/logs-*.zip
+backend/*-logs.zip
+backend/*.log
+backend/LogFiles/
+backend/rebuild.log
+
+# ============================================================================
+# Database Files
+# ============================================================================
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.sqlite3
+
+# ============================================================================
+# Environment & Configuration Files with Secrets
+# ============================================================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json
+!appsettings.json
+connectionstrings.json
+
+# ============================================================================
+# IDEs & Editors
+# ============================================================================
+.idea/
+*.sln.iml
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# Operating System Files
+# ============================================================================
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE_BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================================================
+# Testing & Coverage
+# ============================================================================
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+
+# ============================================================================
+# Temporary & Cache Files
+# ============================================================================
+*.tmp
+*.temp
+*.cache
+.tmp/
+tmp/
+temp/
+
+# Node.js (if any frontend exists)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# ============================================================================
+# Project-Specific Exclusions
+# ============================================================================
+# Backend publish outputs
+backend/publish/
+backend/release-output/
+backend/deploy*.zip
+backend/app-deploy.zip
+backend/app-logs*.zip
+backend/test-*.json
+
+# ============================================================================
+# Security & Sensitive Data - NEVER COMMIT
+# ============================================================================
+*.key
+*.pem
+*.pfx
+*.p12
+*.cer
+*.crt
+secrets.json
+secrets.yml
+*.secret
+.secrets/
+credentials.json
+
+# ============================================================================
+# Keep Important Documentation
+# ============================================================================
+!README.md
+!LICENSE
+!CONTRIBUTING.md
+!infra/main.bicep
+!infra/main.bicepparam
+!infra/deploy.sh
+!infra/README.md
+!infra/QUICKSTART.md

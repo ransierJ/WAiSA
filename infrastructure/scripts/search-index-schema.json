@@ -1,0 +1,57 @@
+{
+  "name": "knowledge-base-index",
+  "fields": [
+    {"name": "id", "type": "Edm.String", "key": true, "searchable": false},
+    {"name": "title", "type": "Edm.String", "searchable": true, "filterable": false},
+    {"name": "description", "type": "Edm.String", "searchable": true, "filterable": false},
+    {"name": "solution", "type": "Edm.String", "searchable": true, "filterable": false},
+    {"name": "category", "type": "Edm.String", "searchable": false, "filterable": true, "facetable": true},
+    {"name": "application", "type": "Edm.String", "searchable": false, "filterable": true, "facetable": true},
+    {"name": "severity", "type": "Edm.String", "searchable": false, "filterable": true, "facetable": true},
+    {"name": "tags", "type": "Collection(Edm.String)", "searchable": true, "filterable": true, "facetable": true},
+    {"name": "embedding", "type": "Collection(Edm.Single)", "dimensions": 1536, "vectorSearchProfile": "vector-profile"},
+    {"name": "successCount", "type": "Edm.Int32", "searchable": false, "filterable": true, "sortable": true},
+    {"name": "failureCount", "type": "Edm.Int32", "searchable": false, "filterable": true, "sortable": true},
+    {"name": "createdAt", "type": "Edm.DateTimeOffset", "searchable": false, "filterable": true, "sortable": true},
+    {"name": "updatedAt", "type": "Edm.DateTimeOffset", "searchable": false, "filterable": true, "sortable": true}
+  ],
+  "vectorSearch": {
+    "algorithms": [
+      {
+        "name": "vector-config",
+        "kind": "hnsw",
+        "hnswParameters": {
+          "m": 4,
+          "efConstruction": 400,
+          "efSearch": 500,
+          "metric": "cosine"
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "name": "vector-profile",
+        "algorithm": "vector-config"
+      }
+    ]
+  },
+  "semantic": {
+    "configurations": [
+      {
+        "name": "semantic-config",
+        "prioritizedFields": {
+          "titleField": {
+            "fieldName": "title"
+          },
+          "prioritizedContentFields": [
+            {"fieldName": "description"},
+            {"fieldName": "solution"}
+          ],
+          "prioritizedKeywordsFields": [
+            {"fieldName": "tags"}
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,711 @@
+{
+  "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/waisa-deployment-20251022-195140",
+  "location": null,
+  "name": "waisa-deployment-20251022-195140",
+  "properties": {
+    "correlationId": "00282ab3-39f2-4d97-a9d2-5d039e40afe5",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/sql-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "sql-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/sql-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "sql-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/sql-connection-string",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/sql-connection-string",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/cosmosdb-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "cosmosdb-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/cosmosdb-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "cosmosdb-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/cosmos-connection-string",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/cosmos-connection-string",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/storage-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "storage-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/storage-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "storage-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/storage-connection-string",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/storage-connection-string",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/servicebus-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "servicebus-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/servicebus-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "servicebus-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/servicebus-connection-string",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/servicebus-connection-string",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/signalr-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "signalr-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/signalr-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "signalr-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/signalr-connection-string",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/signalr-connection-string",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/openai-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "openai-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/openai-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "openai-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/openai-api-key",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/openai-api-key",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/search-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "search-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/search-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "search-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/search-admin-key",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/search-admin-key",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/appservice-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "appservice-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/keyvault-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "keyvault-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/appservice-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "appservice-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/accessPolicies/add",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "kv2e3teyca4kcxk/add",
+        "resourceType": "Microsoft.KeyVault/vaults/accessPolicies"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/monitoring-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "monitoring-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          },
+          {
+            "apiVersion": "2025-04-01",
+            "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/monitoring-deployment",
+            "resourceGroup": "rg-SAIB",
+            "resourceName": "monitoring-deployment",
+            "resourceType": "Microsoft.Resources/deployments"
+          }
+        ],
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Resources/deployments/appservice-deployment",
+        "resourceGroup": "rg-SAIB",
+        "resourceName": "appservice-deployment",
+        "resourceType": "Microsoft.Resources/deployments"
+      }
+    ],
+    "diagnostics": null,
+    "duration": "PT45.1785707S",
+    "error": null,
+    "extensions": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.CognitiveServices/accounts/waisa-poc-openai-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.DocumentDB/databaseAccounts/waisa-poc-cosmos-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.DocumentDB/databaseAccounts/waisa-poc-cosmos-2e3teyca4kcxk/sqlDatabases/WAiSA",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.DocumentDB/databaseAccounts/waisa-poc-cosmos-2e3teyca4kcxk/sqlDatabases/WAiSA/containers/ContextSnapshots",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.DocumentDB/databaseAccounts/waisa-poc-cosmos-2e3teyca4kcxk/sqlDatabases/WAiSA/containers/DeviceMemory",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.DocumentDB/databaseAccounts/waisa-poc-cosmos-2e3teyca4kcxk/sqlDatabases/WAiSA/containers/InteractionHistory",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Insights/components/waisa-poc-insights",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/accessPolicies/add",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/cosmos-connection-string",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/openai-api-key",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/search-admin-key",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/servicebus-connection-string",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/signalr-connection-string",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/sql-connection-string",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.KeyVault/vaults/kv2e3teyca4kcxk/secrets/storage-connection-string",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.OperationalInsights/workspaces/waisa-poc-logs",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Search/searchServices/waisa-poc-search-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.ServiceBus/namespaces/waisa-poc-sb-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.ServiceBus/namespaces/waisa-poc-sb-2e3teyca4kcxk/queues/command-queue",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.ServiceBus/namespaces/waisa-poc-sb-2e3teyca4kcxk/queues/event-queue",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.SignalRService/signalR/waisa-poc-signalr-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Sql/servers/waisa-poc-sql-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Sql/servers/waisa-poc-sql-2e3teyca4kcxk/databases/WAiSADB",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Sql/servers/waisa-poc-sql-2e3teyca4kcxk/firewallRules/AllowAzureServices",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Storage/storageAccounts/aisyspoc2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Storage/storageAccounts/aisyspoc2e3teyca4kcxk/blobServices/default",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Storage/storageAccounts/aisyspoc2e3teyca4kcxk/blobServices/default/containers/execution-logs",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Storage/storageAccounts/aisyspoc2e3teyca4kcxk/blobServices/default/containers/rollback-snapshots",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Storage/storageAccounts/aisyspoc2e3teyca4kcxk/tableServices/default",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Storage/storageAccounts/aisyspoc2e3teyca4kcxk/tableServices/default/tables/telemetry",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Web/serverfarms/waisa-poc-plan",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      },
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.Web/sites/waisa-poc-api-2e3teyca4kcxk",
+        "identifiers": null,
+        "resourceGroup": "rg-SAIB",
+        "resourceType": null
+      }
+    ],
+    "outputs": {
+      "appInsightsInstrumentationKey": {
+        "type": "String",
+        "value": "4a13e2d2-8de2-483c-a817-4b5fa625ae6a"
+      },
+      "appInsightsName": {
+        "type": "String",
+        "value": "waisa-poc-insights"
+      },
+      "cosmosDbAccountName": {
+        "type": "String",
+        "value": "waisa-poc-cosmos-2e3teyca4kcxk"
+      },
+      "cosmosDbEndpoint": {
+        "type": "String",
+        "value": "https://waisa-poc-cosmos-2e3teyca4kcxk.documents.azure.com:443/"
+      },
+      "keyVaultName": {
+        "type": "String",
+        "value": "kv2e3teyca4kcxk"
+      },
+      "keyVaultUri": {
+        "type": "String",
+        "value": "https://kv2e3teyca4kcxk.vault.azure.net/"
+      },
+      "location": {
+        "type": "String",
+        "value": "eastus2"
+      },
+      "logAnalyticsWorkspaceId": {
+        "type": "String",
+        "value": "/subscriptions/01d89fc6-2d44-416c-8bff-4ffa9810f42d/resourceGroups/rg-SAIB/providers/Microsoft.OperationalInsights/workspaces/waisa-poc-logs"
+      },
+      "nextSteps": {
+        "type": "String",
+        "value": "Deployment Complete! Next steps:\n\n1. Configure Azure OpenAI model deployments:\n   az cognitiveservices account deployment create --name ${openai.outputs.accountName} --resource-group ${resourceGroup().name} --deployment-name gpt-4 --model-name gpt-4 --model-version \"0613\" --model-format OpenAI --sku-capacity 10 --sku-name \"Standard\"\n\n2. Configure AI Search indexes (will be done via application code)\n\n3. Initialize SQL Database schema (run migrations)\n\n4. Deploy application code to: ${appService.outputs.webAppUrl}\n\n5. Access Key Vault for secrets: ${keyVault.outputs.keyVaultName}\n"
+      },
+      "openAiAccountName": {
+        "type": "String",
+        "value": "waisa-poc-openai-2e3teyca4kcxk"
+      },
+      "openAiEndpoint": {
+        "type": "String",
+        "value": "https://waisa-poc-openai-2e3teyca4kcxk.openai.azure.com/"
+      },
+      "resourceGroupName": {
+        "type": "String",
+        "value": "rg-SAIB"
+      },
+      "searchEndpoint": {
+        "type": "String",
+        "value": "https://waisa-poc-search-2e3teyca4kcxk.search.windows.net"
+      },
+      "searchServiceName": {
+        "type": "String",
+        "value": "waisa-poc-search-2e3teyca4kcxk"
+      },
+      "serviceBusNamespace": {
+        "type": "String",
+        "value": "waisa-poc-sb-2e3teyca4kcxk"
+      },
+      "signalRName": {
+        "type": "String",
+        "value": "waisa-poc-signalr-2e3teyca4kcxk"
+      },
+      "sqlDatabaseName": {
+        "type": "String",
+        "value": "WAiSADB"
+      },
+      "sqlServerName": {
+        "type": "String",
+        "value": "waisa-poc-sql-2e3teyca4kcxk"
+      },
+      "storageAccountName": {
+        "type": "String",
+        "value": "aisyspoc2e3teyca4kcxk"
+      },
+      "webAppName": {
+        "type": "String",
+        "value": "waisa-poc-api-2e3teyca4kcxk"
+      },
+      "webAppPrincipalId": {
+        "type": "String",
+        "value": "5e1f284c-c06b-4a77-9180-86535c4d999a"
+      },
+      "webAppUrl": {
+        "type": "String",
+        "value": "https://waisa-poc-api-2e3teyca4kcxk.azurewebsites.net"
+      }
+    },
+    "parameters": {
+      "environmentName": {
+        "type": "String",
+        "value": "poc"
+      },
+      "location": {
+        "type": "String",
+        "value": "eastus2"
+      },
+      "projectName": {
+        "type": "String",
+        "value": "waisa"
+      },
+      "sqlAdminLogin": {
+        "type": "SecureString"
+      },
+      "sqlAdminPassword": {
+        "type": "SecureString"
+      },
+      "tags": {
+        "type": "Object",
+        "value": {
+          "createdDate": "2025-10-22",
+          "environment": "poc",
+          "managedBy": "bicep",
+          "project": "WAiSA"
+        }
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.KeyVault",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "vaults/secrets",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "vaults/accessPolicies",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.Resources",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "deployments",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "3705301463320424078",
+    "templateLink": null,
+    "timestamp": "2025-10-22T19:52:41.587510+00:00",
+    "validatedResources": null,
+    "validationLevel": null
+  },
+  "resourceGroup": "rg-SAIB",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}

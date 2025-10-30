@@ -1,0 +1,31 @@
+{
+  "installations": {
+    "chrome-devtools": {
+      "installName": "chrome-devtools",
+      "serverKeys": [
+        "chrome-devtools"
+      ],
+      "sourcePath": "components/mcps/devtools/chrome-devtools.json",
+      "installedAt": "2025-10-29T08:44:20.46880002-04:00",
+      "scope": "project"
+    },
+    "microsoft-dev-box": {
+      "installName": "microsoft-dev-box",
+      "serverKeys": [
+        "DevBox"
+      ],
+      "sourcePath": "components/mcps/devtools/microsoft-dev-box.json",
+      "installedAt": "2025-10-29T08:43:57.115169083-04:00",
+      "scope": "project"
+    },
+    "serena": {
+      "installName": "serena",
+      "serverKeys": [
+        "serena"
+      ],
+      "sourcePath": "components/mcps/devtools/serena.json",
+      "installedAt": "2025-10-29T08:43:47.326882833-04:00",
+      "scope": "project"
+    }
+  }
+}

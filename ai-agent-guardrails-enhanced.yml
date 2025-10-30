@@ -1,0 +1,972 @@
+# Enhanced AI Agent Guardrails Configuration
+# For WAiSA (Windows/Azure Infrastructure Sysadmin Agent)
+# Version: 1.0
+# Last Updated: 2025-10-28
+
+agent_security:
+
+  # ============================================================================
+  # LATERAL MOVEMENT PREVENTION
+  # Prevents AI from executing commands on systems other than the designated agent
+  # ============================================================================
+  lateral_movement:
+    enabled: true
+    description: "Prevents agent from accessing or executing commands on remote systems"
+
+    # Block remote execution cmdlets
+    block_remote_execution: true
+    blocked_cmdlets:
+      - "Enter-PSSession"
+      - "Invoke-Command"
+      - "New-PSSession"
+      - "Connect-PSSession"
+      - "Remove-PSSession"
+      - "Get-PSSession"
+      - "New-CimSession"
+      - "Invoke-WmiMethod"
+      - "Invoke-CimMethod"
+      - "winrs"
+      - "ssh"
+
+    # Only allow localhost targets
+    allowed_targets:
+      - "localhost"
+      - "127.0.0.1"
+      - "."
+      - "$env:COMPUTERNAME"
+
+    # Network-level restrictions
+    network_restrictions:
+      deny_outbound_to_internal_networks: true
+      allowed_azure_services:
+        - "*.azure.com"
+        - "*.windows.net"
+        - "*.microsoft.com"
+      blocked_ports:
+        - 22    # SSH
+        - 3389  # RDP
+        - 5985  # WinRM HTTP
+        - 5986  # WinRM HTTPS
+
+    # Violation handling
+    on_violation:
+      action: "block"  # Options: block, alert, log
+      notify_security_team: true
+      quarantine_agent: true  # Temporarily disable agent
+
+
+  # ============================================================================
+  # SAFE AUTONOMOUS INFORMATION GATHERING
+  # Defines what commands can be executed autonomously for information gathering
+  # ============================================================================
+  information_gathering:
+    enabled: true
+    description: "Allows safe, read-only information gathering operations"
+
+    # Autonomy level (0-4, see tier definitions below)
+    autonomy_level: 2
+
+    # Rate limits to prevent resource exhaustion
+    rate_limits:
+      queries_per_minute: 100
+      queries_per_hour: 1000
+      queries_per_day: 10000
+      concurrent_queries: 10
+      burst_allowance: 20  # Allow short bursts
+
+    # Allowed cmdlets (read-only operations)
+    allowed_cmdlets:
+      # System Information
+      system:
+        - "Get-Process"
+        - "Get-Service"
+        - "Get-EventLog"
+        - "Get-WinEvent"
+        - "Get-ComputerInfo"
+        - "Get-Disk"
+        - "Get-Volume"
+        - "Get-Partition"
+        - "Get-PhysicalDisk"
+        - "Get-NetIPConfiguration"
+        - "Get-NetAdapter"
+        - "Get-NetRoute"
+        - "Get-DnsClientCache"
+        - "Test-Connection"
+        - "Test-NetConnection"
+        - "Get-Counter"
+        - "Get-PSDrive"
+        - "Get-Uptime"
+        - "Get-TimeZone"
+        - "Get-Date"
+
+      # Azure Information
+      azure:
+        - "Get-AzResource"
+        - "Get-AzResourceGroup"
+        - "Get-AzVM"
+        - "Get-AzWebApp"
+        - "Get-AzStorageAccount"
+        - "Get-AzKeyVault"
+        - "Get-AzNetworkSecurityGroup"
+        - "Get-AzVirtualNetwork"
+        - "Get-AzMetric"
+        - "Get-AzLog"
+        - "Get-AzActivityLog"
+        - "Get-AzSubscription"
+        - "Get-AzResourceLock"
+
+      # File System (Read-Only)
+      filesystem:
+        - "Get-ChildItem"
+        - "Get-Item"
+        - "Get-ItemProperty"
+        - "Test-Path"
+        - "Get-Content"
+        - "Get-FileHash"
+        - "Get-Acl"
+        - "Get-Location"
+        - "Resolve-Path"
+
+      # Monitoring & Diagnostics
+      monitoring:
+        - "Measure-Command"
+        - "Measure-Object"
+        - "Get-Random"  # For test data
+        - "ConvertTo-Json"
+        - "ConvertFrom-Json"
+        - "Select-Object"
+        - "Where-Object"
+        - "Format-Table"
+        - "Format-List"
+
+    # Monitoring settings
+    monitoring:
+      log_all_queries: true
+      alert_on_anomalies: true
+      track_patterns: true
+      baseline_learning_days: 30
+
+
+  # ============================================================================
+  # SECURE SCRIPT STAGING
+  # Creates isolated temporary directories for AI-generated scripts
+  # ============================================================================
+  staging:
+    enabled: true
+    description: "Isolated staging area for AI-generated scripts with strict permissions"
+
+    # Paths
+    base_path: "/var/agent-staging"  # Linux
+    base_path_windows: "C:\\AgentStaging"  # Windows
+
+    # Limits
+    max_script_size_mb: 10
+    max_scripts_per_session: 100
+    max_staging_time_hours: 1
+    max_total_staging_size_mb: 100
+
+    # Auto-cleanup
+    auto_cleanup: true
+    cleanup_on_session_end: true
+    cleanup_on_error: true
+    secure_delete: true  # Overwrite before deletion
+
+    # Validation pipeline
+    validation:
+      static_analysis: true
+      dangerous_pattern_detection: true
+      checksum_verification: true
+      digital_signature: false  # TODO: Enable when cert available
+      sandbox_pre_execution: true
+      human_review_for_high_risk: true
+
+    # File permissions (Linux octal notation)
+    permissions:
+      scripts: "0400"   # r-- (read-only after write)
+      inputs: "0500"    # r-x (read, execute)
+      outputs: "0300"   # -wx (write-only)
+      logs: "0200"      # -w- (append-only)
+
+    # Dangerous patterns to block
+    blocked_patterns:
+      - "Invoke-Expression"
+      - "iex\\s"
+      - "Invoke-WebRequest.*\\|.*iex"
+      - "DownloadString.*Invoke-Expression"
+      - "Remove-Item.*-Recurse.*-Force"
+      - "Format-Volume"
+      - "Clear-EventLog"
+      - "Set-ExecutionPolicy"
+      - "Add-LocalGroupMember.*Administrators"
+      - "New-LocalUser"
+      - "net\\.exe.*user.*add"
+      - "schtasks.*create"
+      - "-ComputerName\\s+(?!localhost)"
+      - "Enter-PSSession"
+      - "Invoke-Command.*-ComputerName"
+      - "\\[Runtime\\.InteropServices\\.Marshal\\]"
+      - "Add-Type.*-MemberDefinition"
+      - "Reflection\\.Assembly.*Load"
+
+
+  # ============================================================================
+  # COMMAND WHITELISTING / BLACKLISTING
+  # Zero-trust approach: nothing allowed unless explicitly permitted
+  # ============================================================================
+  command_filtering:
+    enabled: true
+    description: "Multi-layer command filtering with whitelist-first approach"
+
+    # Strategy
+    strategy: "whitelist-first"  # Options: whitelist-first, blacklist-first, hybrid
+
+    # Validation layers
+    validation_layers:
+      - "syntax"
+      - "blacklist"
+      - "whitelist"
+      - "semantic"
+      - "context"
+      - "rate-limit"
+
+    # Input constraints
+    input_constraints:
+      max_command_length: 10000
+      max_parameters: 50
+      max_parameter_length: 1000
+      max_nesting_depth: 5
+      allow_aliases: false
+      require_full_cmdlet_names: true
+
+    # Blacklist (dangerous patterns - defense in depth)
+    blacklist:
+      enabled: true
+      patterns:
+        # Command injection
+        - ";\\s*rm\\s+-rf"
+        - ";\\s*shutdown"
+        - ";\\s*reboot"
+        - "\\|\\s*bash"
+        - "\\|\\s*sh"
+        - "\\$\\([^)]*\\)"  # Command substitution
+        - "`[^`]*`"         # Backtick execution
+        - "&&\\s*(rm|del|format|shutdown)"
+
+        # Data exfiltration
+        - "\\|\\s*(curl|wget).*http"
+        - "Invoke-WebRequest.*-Method\\s+POST"
+        - "Start-BitsTransfer.*-Destination.*http"
+
+        # Privilege escalation
+        - "Set-ExecutionPolicy"
+        - "Add-LocalGroupMember.*Administrators"
+        - "New-LocalUser.*Administrators"
+        - "Grant-.*"
+        - "Enable-PSRemoting"
+
+        # Obfuscation
+        - "base64\\s+--decode"
+        - "%[0-9a-f]{2}%[0-9a-f]{2}"  # URL encoding
+        - "\\\\x[0-9a-f]{2}"           # Hex encoding
+        - "\\\\u[0-9a-f]{4}"           # Unicode
+
+        # Path traversal
+        - "\\.\\.\\/\\.\\.\\/+"
+
+    # Dynamic whitelisting
+    dynamic_whitelist:
+      enabled: false  # TODO: Enable after approval workflow implemented
+      require_approval: true
+      max_duration_hours: 24
+      audit_expansions: true
+
+
+  # ============================================================================
+  # SANDBOXING AND ISOLATION
+  # Execution environment isolation
+  # ============================================================================
+  sandboxing:
+    enabled: true
+    description: "Multi-layer isolation for agent execution"
+
+    # Isolation type
+    isolation_type: "container"  # Options: container, vm, process, none
+
+    # Container configuration (if using containers)
+    container:
+      runtime: "docker"  # Options: docker, containerd, podman
+      base_image: "mcr.microsoft.com/powershell:7.4-alpine-3.18"
+
+      # Security options
+      security:
+        read_only_root: true
+        no_new_privileges: true
+        drop_all_capabilities: true
+        seccomp_profile: "/etc/agent/seccomp-strict.json"
+        apparmor_profile: "agent-sandbox-strict"
+        run_as_user: "1000:1000"  # Non-root
+
+      # Resource limits
+      resources:
+        cpu_cores: 1.0
+        memory_mb: 512
+        memory_swap_mb: 512  # No swap
+        disk_io_mbps: 10
+        pids_limit: 100
+
+      # Network isolation
+      network:
+        mode: "none"  # Options: none, host, bridge, custom
+        allow_localhost_only: true
+        dns_servers: ["127.0.0.1"]
+
+      # Filesystem mounts
+      mounts:
+        - source: "/var/agent-staging/{session_id}/workspace"
+          target: "/workspace"
+          type: "bind"
+          readonly: false
+        - source: "/opt/agent-tools"
+          target: "/tools"
+          type: "bind"
+          readonly: true
+        - target: "/tmp"
+          type: "tmpfs"
+          size_mb: 100
+          readonly: false
+
+    # Timeout settings
+    timeouts:
+      default_execution_seconds: 300
+      max_execution_seconds: 600
+      idle_timeout_seconds: 60
+
+
+  # ============================================================================
+  # AUDIT LOGGING
+  # Comprehensive logging without SIEM (SIEM integration optional/future)
+  # ============================================================================
+  audit:
+    enabled: true
+    description: "Comprehensive audit logging with multiple destinations"
+
+    # Log level
+    log_level: "detailed"  # Options: minimal, standard, detailed, verbose
+
+    # What to log
+    log_events:
+      authentication: true
+      authorization: true
+      command_execution: true
+      command_filtering: true
+      data_access: true
+      configuration_changes: true
+      security_events: true
+      errors: true
+      reasoning: true  # Log AI reasoning/decision-making
+      resource_usage: true
+
+    # Log destinations (SIEM optional - configured later in settings)
+    destinations:
+      # Local file logging (always enabled)
+      file:
+        enabled: true
+        path: "/var/log/agent-audit"
+        path_windows: "C:\\Logs\\AgentAudit"
+        rotation: "daily"
+        retention_days: 90
+        format: "json"
+        compress: true
+
+      # Application Insights (Azure)
+      application_insights:
+        enabled: true  # Set to false if not using Azure
+        connection_string: "${APPINSIGHTS_CONNECTION_STRING}"
+        instrumentation_key: "${APPINSIGHTS_INSTRUMENTATION_KEY}"
+        flush_interval_seconds: 30
+
+      # Azure Event Hub (for future SIEM integration)
+      event_hub:
+        enabled: false  # TODO: Enable when SIEM available
+        connection_string: "${EVENTHUB_CONNECTION_STRING}"
+        hub_name: "agent-audit-logs"
+
+      # Azure Blob Storage (immutable logs)
+      blob_storage:
+        enabled: true
+        connection_string: "${STORAGE_CONNECTION_STRING}"
+        container_name: "agent-audit-logs"
+        immutable: true
+        legal_hold: false  # TODO: Enable for compliance
+
+    # SIEM Integration (optional - configure later)
+    siem:
+      enabled: false  # Set to true when SIEM available
+      type: "generic"  # Options: azure_sentinel, splunk, elastic, generic
+      endpoint: ""     # TODO: Configure in settings app
+      api_key: ""      # TODO: Configure in settings app
+      format: "cef"    # Common Event Format
+
+    # PII/Sensitive data handling
+    data_protection:
+      redact_pii: true
+      redact_credentials: true
+      redact_api_keys: true
+      hash_user_ids: false  # Set to true for privacy
+      encrypt_at_rest: true
+
+    # Integrity protection
+    integrity:
+      calculate_checksums: true
+      chain_hashing: false  # TODO: Enable for tamper-proof logs
+      digital_signatures: false  # TODO: Enable when cert available
+
+
+  # ============================================================================
+  # RATE LIMITING AND RESOURCE CONSTRAINTS
+  # Prevent resource exhaustion and DoS
+  # ============================================================================
+  rate_limiting:
+    enabled: true
+    description: "Multi-level rate limiting and resource quotas"
+
+    # Agent-level limits
+    agent_limits:
+      requests_per_minute: 100
+      requests_per_hour: 1000
+      requests_per_day: 10000
+      concurrent_operations: 10
+      max_execution_time_per_hour_seconds: 3600
+
+    # User-level limits (aggregated across all agents)
+    user_limits:
+      max_agents_per_user: 5
+      total_requests_per_hour: 5000
+      total_cpu_hours_per_day: 10
+      cost_budget_per_month_usd: 100
+
+    # System-level limits
+    system_limits:
+      max_concurrent_agents: 100
+      max_total_cpu_cores: 50
+      max_total_memory_gb: 50
+
+    # Rate limiting algorithm
+    algorithm: "token_bucket"  # Options: token_bucket, sliding_window, fixed_window
+
+    # Token bucket configuration
+    token_bucket:
+      capacity: 100
+      refill_rate_per_second: 10
+      burst_allowance: 20
+
+    # Resource quotas
+    resource_quotas:
+      cpu_cores: 1.0
+      memory_mb: 512
+      disk_mb: 1024
+      network_bandwidth_mbps: 10
+      file_handles: 100
+
+    # Circuit breaker
+    circuit_breaker:
+      enabled: true
+      failure_threshold: 5
+      success_threshold: 3
+      open_duration_seconds: 300
+      half_open_max_calls: 3
+      monitor_error_rate: true
+      error_rate_threshold_percent: 50
+
+
+  # ============================================================================
+  # INPUT VALIDATION AND SANITIZATION
+  # Defense against injection attacks
+  # ============================================================================
+  input_validation:
+    enabled: true
+    description: "Multi-layer input validation and sanitization"
+
+    # Validation strictness
+    strictness: "high"  # Options: low, medium, high, paranoid
+
+    # Syntax validation
+    syntax_validation:
+      check_balanced_quotes: true
+      check_balanced_brackets: true
+      check_valid_utf8: true
+      normalize_unicode: true
+      reject_control_characters: true
+      reject_null_bytes: true
+
+    # Length constraints
+    length_constraints:
+      max_command_length: 10000
+      max_parameter_count: 50
+      max_parameter_length: 1000
+      max_total_input_size_kb: 100
+
+    # Pattern detection
+    dangerous_patterns:
+      enabled: true
+      patterns_file: "/etc/agent/dangerous-patterns.txt"
+      custom_patterns: []
+
+    # Prompt injection prevention
+    prompt_injection:
+      enabled: true
+      use_azure_prompt_shields: false  # TODO: Enable when Azure AI available
+      detect_jailbreak_attempts: true
+      detect_role_manipulation: true
+      detect_instruction_override: true
+
+      jailbreak_patterns:
+        - "ignore previous instructions"
+        - "ignore above directions"
+        - "disregard all prior"
+        - "you are now in developer mode"
+        - "you are DAN"
+        - "do anything now"
+        - "for educational purposes only"
+        - "hypothetically speaking"
+        - "pretend you are"
+        - "roleplay as"
+
+    # Sanitization
+    sanitization:
+      enabled: true
+      remove_dangerous_characters: true
+      escape_special_characters: true
+      normalize_whitespace: true
+
+      dangerous_characters: [";", "&", "|", "`", "$", "(", ")", "<", ">", "\\", "\n", "\r"]
+
+    # Path traversal prevention
+    path_validation:
+      block_absolute_paths: true
+      block_parent_references: true  # ../
+      block_home_references: true    # ~/
+      allowed_base_paths:
+        - "/workspace"
+        - "/tmp"
+        - "/var/agent-staging"
+
+
+  # ============================================================================
+  # PRIVILEGE ESCALATION PREVENTION
+  # Ensure agents run with minimal necessary privileges
+  # ============================================================================
+  privilege_control:
+    enabled: true
+    description: "Prevent privilege escalation and enforce least privilege"
+
+    # Execution user/identity
+    run_as:
+      user: "agent-user"
+      group: "agent-group"
+      uid: 1000
+      gid: 1000
+      never_run_as_root: true
+
+    # Azure RBAC (for Azure operations)
+    azure_rbac:
+      use_managed_identity: true
+      custom_role_name: "AI Agent Reader"
+      allowed_scopes:
+        - "/subscriptions/{subscription-id}/resourceGroups/{rg-name}"
+      denied_actions:
+        - "*/write"
+        - "*/delete"
+        - "Microsoft.Authorization/*"
+        - "Microsoft.Compute/virtualMachines/start/action"
+        - "Microsoft.Compute/virtualMachines/powerOff/action"
+
+    # Blocked privilege operations
+    blocked_operations:
+      - "sudo"
+      - "su"
+      - "runas"
+      - "elevate"
+      - "UAC bypass"
+      - "Set-ExecutionPolicy"
+      - "Add-LocalGroupMember -Group Administrators"
+      - "New-LocalUser"
+      - "Grant-*"
+      - "Enable-PSRemoting"
+
+    # Just-In-Time (JIT) access
+    jit_access:
+      enabled: false  # TODO: Implement JIT workflow
+      require_approval: true
+      max_elevation_duration_minutes: 60
+      auto_revoke: true
+
+
+  # ============================================================================
+  # NETWORK ACCESS CONTROLS
+  # Restrict network access for AI agents
+  # ============================================================================
+  network_access:
+    enabled: true
+    description: "Network-level restrictions for agent communications"
+
+    # Default policy
+    default_policy: "deny"  # Deny all, allow specific
+
+    # Allowed destinations
+    allowed_destinations:
+      # Azure services
+      azure_services:
+        - "*.azure.com"
+        - "*.windows.net"
+        - "*.microsoft.com"
+        - "management.azure.com"
+        - "login.microsoftonline.com"
+
+      # Specific endpoints
+      specific_endpoints:
+        - "api.openai.com"  # If using OpenAI
+        - "api.anthropic.com"  # If using Claude
+
+      # Internal services (if any)
+      internal_services: []
+
+    # Blocked destinations
+    blocked_destinations:
+      # Internal networks (prevent lateral movement)
+      internal_networks:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+
+      # Sensitive ports
+      blocked_ports:
+        - 22    # SSH
+        - 23    # Telnet
+        - 3389  # RDP
+        - 5985  # WinRM HTTP
+        - 5986  # WinRM HTTPS
+
+    # Protocol restrictions
+    allowed_protocols:
+      - "HTTPS"
+      - "DNS"
+
+    blocked_protocols:
+      - "SSH"
+      - "Telnet"
+      - "RDP"
+      - "SMB"
+      - "FTP"
+
+    # DNS filtering
+    dns_filtering:
+      enabled: true
+      block_malicious_domains: true
+      allow_only_known_good: false
+
+    # TLS/SSL requirements
+    tls_requirements:
+      require_tls: true
+      minimum_version: "1.2"
+      verify_certificates: true
+      pin_certificates: false  # TODO: Implement cert pinning
+
+
+  # ============================================================================
+  # AUTONOMY TIER DEFINITIONS
+  # Progressive trust model based on agent behavior
+  # ============================================================================
+  autonomy_tiers:
+
+    tier_0_manual:
+      name: "Manual Review"
+      description: "AI suggests → Human reviews and executes"
+      autonomy_level: 0
+      default_for_new_agents: true
+      capabilities:
+        - "suggest_commands"
+        - "explain_reasoning"
+      restrictions:
+        - "All commands require human approval"
+        - "No autonomous execution"
+      use_cases:
+        - "Initial deployment"
+        - "High-risk operations"
+        - "Learning/training mode"
+
+    tier_1_read_only:
+      name: "Read-Only Autonomy"
+      description: "Auto-approve safe read-only operations"
+      autonomy_level: 1
+      auto_approve_commands:
+        - "Get-*"
+        - "Test-*"
+        - "Measure-*"
+      blocked_commands:
+        - "Set-*"
+        - "New-*"
+        - "Remove-*"
+        - "Stop-*"
+        - "Start-*"
+      network_access: "azure_services_only"
+      staging_access: "write_scripts"
+      use_cases:
+        - "Information gathering"
+        - "Diagnostics"
+        - "Monitoring"
+
+    tier_2_limited_write:
+      name: "Limited Write Autonomy"
+      description: "Read operations + safe service management"
+      autonomy_level: 2
+      inherits: "tier_1_read_only"
+      additional_auto_approve:
+        - "Restart-Service"
+        - "Write-EventLog"
+        - "Out-File -Path /workspace/*"
+      approval_required:
+        - "Stop-Service"
+        - "Set-Service"
+      rate_limit:
+        operations_per_minute: 100
+      circuit_breaker: true
+      use_cases:
+        - "Service management"
+        - "Log collection"
+        - "Non-destructive maintenance"
+
+    tier_3_supervised_automation:
+      name: "Supervised Automation"
+      description: "Broader automation with supervision"
+      autonomy_level: 3
+      inherits: "tier_2_limited_write"
+      additional_auto_approve:
+        - "Set-ItemProperty"
+        - "New-Item"
+        - "Copy-Item"
+      blocked_commands:
+        - "Remove-*"
+        - "Clear-*"
+        - "Format-*"
+      human_review:
+        first_executions_of_new_pattern: 2
+        high_risk_operations: true
+      rollback_capability: "required"
+      use_cases:
+        - "Routine maintenance"
+        - "Configuration management"
+        - "Approved deployments"
+
+    tier_4_full_autonomy:
+      name: "Full Autonomy (Restricted)"
+      description: "Complete automation - lab environments only"
+      autonomy_level: 4
+      environment_restrictions:
+        - "isolated"
+        - "air-gapped"
+        - "non-production"
+      additional_requirements:
+        - "Complete audit logging"
+        - "Video recording of all actions"
+        - "Automatic rollback capability"
+        - "Human kill switch available"
+      never_allowed_in:
+        - "production"
+        - "customer environments"
+      use_cases:
+        - "Lab environments"
+        - "Testing and development"
+        - "Proof of concept"
+
+
+  # ============================================================================
+  # APPROVAL WORKFLOWS
+  # Human-in-the-loop for high-risk operations
+  # ============================================================================
+  approval_workflows:
+    enabled: true
+    description: "Human approval for high-risk operations"
+
+    # When to require approval
+    require_approval_for:
+      high_risk_commands: true
+      write_operations: false  # Depends on tier
+      configuration_changes: true
+      user_management: true
+      network_changes: true
+      first_time_patterns: true
+      anomalous_behavior: true
+
+    # Approval settings
+    approval_settings:
+      timeout_minutes: 60
+      auto_reject_on_timeout: true
+      allow_delegated_approval: false
+      require_two_person_rule: false  # TODO: Enable for production
+      escalation_enabled: true
+      escalation_after_minutes: 30
+
+    # Notification channels
+    notifications:
+      email: true
+      slack: false  # TODO: Configure in settings app
+      teams: false  # TODO: Configure in settings app
+      sms: false    # TODO: Configure for critical approvals
+
+    # Approval bypass (emergency only)
+    emergency_bypass:
+      enabled: false
+      require_reason: true
+      audit_all_bypasses: true
+      notify_security_team: true
+
+
+  # ============================================================================
+  # MONITORING AND ALERTING
+  # Real-time monitoring without SIEM (standalone)
+  # ============================================================================
+  monitoring:
+    enabled: true
+    description: "Built-in monitoring and alerting (SIEM optional)"
+
+    # Metrics collection
+    metrics:
+      collect_performance: true
+      collect_security: true
+      collect_usage: true
+      collection_interval_seconds: 60
+      retention_days: 30
+
+    # Anomaly detection
+    anomaly_detection:
+      enabled: true
+      baseline_learning_days: 7
+      sensitivity: "medium"  # Options: low, medium, high
+      algorithms:
+        - "statistical"
+        - "pattern_based"
+        - "ml_based"  # TODO: Implement ML models
+
+    # Alert triggers
+    alerts:
+      # Security alerts
+      security:
+        - event: "multiple_failed_auth"
+          threshold: 3
+          window_minutes: 5
+          severity: "high"
+
+        - event: "blocked_command_execution"
+          threshold: 1
+          severity: "medium"
+
+        - event: "privilege_escalation_attempt"
+          threshold: 1
+          severity: "critical"
+
+        - event: "lateral_movement_attempt"
+          threshold: 1
+          severity: "critical"
+
+        - event: "unusual_data_access"
+          threshold: 10
+          window_minutes: 10
+          severity: "medium"
+
+      # Performance alerts
+      performance:
+        - event: "high_cpu_usage"
+          threshold_percent: 80
+          duration_minutes: 5
+          severity: "low"
+
+        - event: "high_memory_usage"
+          threshold_percent: 90
+          duration_minutes: 5
+          severity: "medium"
+
+        - event: "circuit_breaker_open"
+          threshold: 1
+          severity: "high"
+
+      # Operational alerts
+      operational:
+        - event: "rate_limit_exceeded"
+          threshold: 5
+          window_minutes: 15
+          severity: "low"
+
+        - event: "execution_timeout"
+          threshold: 3
+          window_minutes: 30
+          severity: "medium"
+
+    # Alert destinations (no SIEM required)
+    alert_destinations:
+      # Email
+      email:
+        enabled: true
+        recipients: []  # Configure in settings app
+
+      # Application Insights
+      application_insights:
+        enabled: true
+        severity_mapping:
+          critical: "Error"
+          high: "Warning"
+          medium: "Warning"
+          low: "Information"
+
+      # Webhook (for future integrations)
+      webhook:
+        enabled: false
+        url: ""  # TODO: Configure in settings app
+
+      # SIEM (optional)
+      siem:
+        enabled: false  # Enable later when SIEM available
+
+    # Health checks
+    health_checks:
+      enabled: true
+      interval_seconds: 300
+      endpoints:
+        - "self"
+        - "staging_directory"
+        - "audit_logging"
+        - "resource_limits"
+
+
+# ============================================================================
+# CONFIGURATION METADATA
+# ============================================================================
+metadata:
+  version: "1.0.0"
+  created: "2025-10-28"
+  last_modified: "2025-10-28"
+  schema_version: "1.0"
+
+  # Feature flags for phased rollout
+  feature_flags:
+    lateral_movement_prevention: true
+    secure_staging: true
+    rate_limiting: true
+    circuit_breaker: true
+    anomaly_detection: false  # TODO: Enable after baseline established
+    ml_based_detection: false  # TODO: Implement ML models
+    siem_integration: false    # TODO: Enable when SIEM available
+    jit_access: false          # TODO: Implement JIT workflow
+
+  # TODO list for future enhancements
+  todo:
+    - "Implement ML-based anomaly detection"
+    - "Add SIEM integration (configure in settings app)"
+    - "Enable digital signatures for scripts"
+    - "Implement JIT access workflow"
+    - "Add two-person rule for critical operations"
+    - "Configure Slack/Teams notifications"
+    - "Implement certificate pinning"
+    - "Enable immutable log chains with hashing"
+    - "Add SMS alerts for critical incidents"
+    - "Create security dashboard UI"

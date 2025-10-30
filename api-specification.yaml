@@ -1,0 +1,798 @@
+openapi: 3.0.3
+info:
+  title: Confidence-Based Information Source Routing API
+  description: |
+    Intelligent information routing system that queries multiple sources (KB, LLM, MS Docs, Web)
+    and returns the highest-confidence answer with comprehensive metadata and alternatives.
+  version: 1.0.0
+  contact:
+    name: Backend Architecture Team
+    email: backend@example.com
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+  - url: https://staging-api.example.com/v1
+    description: Staging
+  - url: http://localhost:3000/v1
+    description: Local Development
+
+tags:
+  - name: Query
+    description: Main query routing endpoints
+  - name: Cache
+    description: Cache management
+  - name: Metrics
+    description: Performance and analytics
+  - name: Admin
+    description: Administrative operations
+
+paths:
+  /route:
+    post:
+      tags:
+        - Query
+      summary: Route a query to information sources
+      description: |
+        Routes a user query through the confidence-based orchestrator. The system will:
+        1. Check cache for existing answer
+        2. Classify the query
+        3. Select routing strategy
+        4. Query sources based on strategy
+        5. Aggregate results by confidence
+        6. Return best answer with alternatives
+      operationId: routeQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+            examples:
+              simple:
+                summary: Simple factual query
+                value:
+                  query:
+                    text: "What is Azure Active Directory?"
+                    userId: "user123"
+              complex:
+                summary: Complex procedural query
+                value:
+                  query:
+                    text: "How do I configure Azure AD authentication in a Node.js application with MSAL?"
+                    userId: "user123"
+                    context:
+                      userExpertiseLevel: "intermediate"
+                      urgency: "normal"
+                  options:
+                    strategy: "sequential_short_circuit"
+              urgent:
+                summary: Urgent/critical query
+                value:
+                  query:
+                    text: "URGENT: Production outage - Azure AD login failing with error AADSTS50058"
+                    userId: "user456"
+                    context:
+                      urgency: "critical"
+                  options:
+                    strategy: "parallel_aggregate"
+                    bypassCache: true
+      responses:
+        '200':
+          description: Successful response with answer and metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+              examples:
+                highConfidence:
+                  summary: High confidence answer from KB
+                  value:
+                    answer: "Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management service..."
+                    confidence: 92
+                    source: "kb"
+                    metadata:
+                      latency: 120
+                      documentsSearched: 5
+                      matchScore: 0.94
+                    reasoning: "Found 5 matching documents, best match: 'Azure AD Overview'"
+                    alternatives:
+                      - answer: "Azure AD is a cloud-based authentication service..."
+                        source: "llm"
+                        confidence: 78
+                    timestamp: "2025-10-27T10:30:00Z"
+                lowConfidence:
+                  summary: Low confidence with warning
+                  value:
+                    answer: "Based on available information, Azure AD is an identity service..."
+                    confidence: 62
+                    source: "web"
+                    warning: "Low confidence - please verify this answer independently"
+                    alternatives:
+                      - answer: "Azure AD provides identity management..."
+                        source: "llm"
+                        confidence: 58
+                    timestamp: "2025-10-27T10:30:00Z"
+                conflict:
+                  summary: Conflicting answers resolved
+                  value:
+                    answer: "To configure Azure AD authentication, use the @azure/msal-node package..."
+                    confidence: 81
+                    source: "ms_docs"
+                    conflict: true
+                    warning: "Multiple sources provided conflicting answers"
+                    alternatives:
+                      - answer: "Configure Azure AD by installing passport-azure-ad..."
+                        source: "llm"
+                        confidence: 76
+                    timestamp: "2025-10-27T10:30:00Z"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Invalid request"
+                message: "Query text is required and must be between 1-1000 characters"
+                code: "INVALID_QUERY"
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Rate limit exceeded"
+                message: "Maximum 100 requests per minute allowed"
+                code: "RATE_LIMIT_EXCEEDED"
+                retryAfter: 45
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Internal server error"
+                message: "All information sources failed"
+                code: "ALL_SOURCES_FAILED"
+
+  /route/batch:
+    post:
+      tags:
+        - Query
+      summary: Route multiple queries in batch
+      description: |
+        Efficiently route multiple queries in a single request.
+        Queries are processed with request batching and shared caching.
+      operationId: routeBatch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - queries
+              properties:
+                queries:
+                  type: array
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: Batch results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/QueryResponse'
+                  summary:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      successful:
+                        type: integer
+                      failed:
+                        type: integer
+                      avgConfidence:
+                        type: number
+                      totalLatency:
+                        type: integer
+
+  /cache/invalidate:
+    post:
+      tags:
+        - Cache
+      summary: Invalidate cache entries
+      description: Invalidate cache entries matching a pattern
+      operationId: invalidateCache
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pattern
+              properties:
+                pattern:
+                  type: string
+                  description: Regex pattern to match cache keys
+                  example: "azure.*authentication"
+      responses:
+        '200':
+          description: Cache invalidated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invalidated:
+                    type: integer
+                    description: Number of entries invalidated
+                  message:
+                    type: string
+
+  /cache/stats:
+    get:
+      tags:
+        - Cache
+      summary: Get cache statistics
+      description: Retrieve cache performance metrics
+      operationId: getCacheStats
+      responses:
+        '200':
+          description: Cache statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hitRate:
+                    type: number
+                    description: Cache hit rate (0-1)
+                    example: 0.65
+                  hits:
+                    type: integer
+                    example: 125000
+                  misses:
+                    type: integer
+                    example: 67500
+                  size:
+                    type: integer
+                    description: Number of cached entries
+                    example: 45000
+                  memoryUsage:
+                    type: integer
+                    description: Memory usage in bytes
+                    example: 524288000
+
+  /metrics:
+    get:
+      tags:
+        - Metrics
+      summary: Get system metrics
+      description: Retrieve comprehensive system performance metrics
+      operationId: getMetrics
+      parameters:
+        - name: timeframe
+          in: query
+          schema:
+            type: string
+            enum: [1h, 24h, 7d, 30d]
+            default: 24h
+          description: Metrics timeframe
+      responses:
+        '200':
+          description: System metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemMetrics'
+
+  /metrics/sources:
+    get:
+      tags:
+        - Metrics
+      summary: Get source-specific metrics
+      description: Retrieve performance metrics broken down by source
+      operationId: getSourceMetrics
+      parameters:
+        - name: timeframe
+          in: query
+          schema:
+            type: string
+            enum: [1h, 24h, 7d, 30d]
+            default: 24h
+        - name: source
+          in: query
+          schema:
+            type: string
+            enum: [kb, llm, ms_docs, web]
+          description: Filter by specific source
+      responses:
+        '200':
+          description: Source metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SourceMetrics'
+
+  /health:
+    get:
+      tags:
+        - Admin
+      summary: Health check
+      description: Check system health and source availability
+      operationId: healthCheck
+      responses:
+        '200':
+          description: System healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, unhealthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  sources:
+                    type: object
+                    properties:
+                      kb:
+                        $ref: '#/components/schemas/SourceHealth'
+                      llm:
+                        $ref: '#/components/schemas/SourceHealth'
+                      ms_docs:
+                        $ref: '#/components/schemas/SourceHealth'
+                      web:
+                        $ref: '#/components/schemas/SourceHealth'
+                  cache:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [healthy, degraded, unhealthy]
+                      latency:
+                        type: number
+                  database:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [healthy, degraded, unhealthy]
+                      latency:
+                        type: number
+
+  /admin/config:
+    get:
+      tags:
+        - Admin
+      summary: Get system configuration
+      description: Retrieve current routing configuration
+      operationId: getConfig
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: System configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfig'
+
+    put:
+      tags:
+        - Admin
+      summary: Update system configuration
+      description: Update routing strategies and thresholds
+      operationId: updateConfig
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  config:
+                    $ref: '#/components/schemas/SystemConfig'
+
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: object
+          required:
+            - text
+            - userId
+          properties:
+            text:
+              type: string
+              minLength: 1
+              maxLength: 1000
+              description: The question or query text
+              example: "How do I configure Azure AD authentication?"
+            userId:
+              type: string
+              description: Unique user identifier
+              example: "user123"
+            context:
+              type: object
+              properties:
+                previousQueries:
+                  type: array
+                  items:
+                    type: string
+                  description: Previous queries in this session
+                userExpertiseLevel:
+                  type: string
+                  enum: [beginner, intermediate, expert]
+                  default: intermediate
+                urgency:
+                  type: string
+                  enum: [low, normal, high, critical]
+                  default: normal
+                domain:
+                  type: string
+                  description: Domain/topic hint
+                  example: "azure"
+            metadata:
+              type: object
+              additionalProperties: true
+              description: Additional metadata
+        options:
+          type: object
+          properties:
+            strategy:
+              type: string
+              enum: [sequential_short_circuit, parallel_aggregate, parallel_race, adaptive]
+              description: Force specific routing strategy
+            bypassCache:
+              type: boolean
+              default: false
+              description: Skip cache lookup
+            timeout:
+              type: integer
+              minimum: 1000
+              maximum: 30000
+              description: Maximum timeout in milliseconds
+            sources:
+              type: array
+              items:
+                type: string
+                enum: [kb, llm, ms_docs, web]
+              description: Limit to specific sources
+
+    QueryResponse:
+      type: object
+      required:
+        - answer
+        - confidence
+        - source
+        - metadata
+        - reasoning
+        - timestamp
+      properties:
+        answer:
+          type: string
+          description: The answer text
+        confidence:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Confidence score (0-100%)
+        source:
+          type: string
+          description: Source that provided the answer
+          example: "kb"
+        metadata:
+          type: object
+          properties:
+            latency:
+              type: integer
+              description: Response time in milliseconds
+            tokensUsed:
+              type: integer
+              description: LLM tokens consumed (if applicable)
+            documentsSearched:
+              type: integer
+              description: Number of documents searched
+            cost:
+              type: number
+              description: Cost of this query in USD
+          additionalProperties: true
+        reasoning:
+          type: string
+          description: Explanation for confidence score
+        alternatives:
+          type: array
+          items:
+            type: object
+            properties:
+              answer:
+                type: string
+              source:
+                type: string
+              confidence:
+                type: integer
+          description: Alternative answers from other sources
+        warning:
+          type: string
+          description: Warning message (e.g., for low confidence)
+        conflict:
+          type: boolean
+          description: Whether sources provided conflicting answers
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+
+    SystemMetrics:
+      type: object
+      properties:
+        performance:
+          type: object
+          properties:
+            queriesPerSecond:
+              type: number
+            avgLatency:
+              type: integer
+              description: Average latency in milliseconds
+            p50Latency:
+              type: integer
+            p95Latency:
+              type: integer
+            p99Latency:
+              type: integer
+        accuracy:
+          type: object
+          properties:
+            avgConfidence:
+              type: number
+            confidenceDistribution:
+              type: array
+              items:
+                type: object
+                properties:
+                  range:
+                    type: string
+                    example: "90-100"
+                  count:
+                    type: integer
+                  percentage:
+                    type: number
+            userSatisfactionRate:
+              type: number
+              description: Based on user feedback
+        sources:
+          type: object
+          properties:
+            usage:
+              type: array
+              items:
+                type: object
+                properties:
+                  source:
+                    type: string
+                  queries:
+                    type: integer
+                  percentage:
+                    type: number
+            successRate:
+              type: array
+              items:
+                type: object
+                properties:
+                  source:
+                    type: string
+                  rate:
+                    type: number
+        cost:
+          type: object
+          properties:
+            totalCost:
+              type: number
+              description: Total cost in USD
+            costPerQuery:
+              type: number
+            costBySource:
+              type: array
+              items:
+                type: object
+                properties:
+                  source:
+                    type: string
+                  cost:
+                    type: number
+        cache:
+          type: object
+          properties:
+            hitRate:
+              type: number
+            hits:
+              type: integer
+            misses:
+              type: integer
+            size:
+              type: integer
+
+    SourceMetrics:
+      type: object
+      properties:
+        source:
+          type: string
+          example: "kb"
+        queries:
+          type: integer
+          description: Number of queries sent to this source
+        avgConfidence:
+          type: number
+          description: Average confidence score
+        avgLatency:
+          type: integer
+          description: Average latency in milliseconds
+        successRate:
+          type: number
+          description: Success rate (0-1)
+        errorRate:
+          type: number
+          description: Error rate (0-1)
+        cost:
+          type: number
+          description: Total cost for this source
+
+    SourceHealth:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        latency:
+          type: number
+          description: Recent average latency
+        errorRate:
+          type: number
+          description: Recent error rate
+        lastCheck:
+          type: string
+          format: date-time
+
+    SystemConfig:
+      type: object
+      properties:
+        strategies:
+          type: object
+          properties:
+            default:
+              $ref: '#/components/schemas/StrategyConfig'
+            critical:
+              $ref: '#/components/schemas/StrategyConfig'
+            fast:
+              $ref: '#/components/schemas/StrategyConfig'
+        thresholds:
+          type: object
+          properties:
+            kb:
+              type: integer
+              example: 85
+            llm:
+              type: integer
+              example: 75
+            ms_docs:
+              type: integer
+              example: 70
+            web:
+              type: integer
+              example: 0
+        cache:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            ttlByConfidence:
+              type: object
+              properties:
+                high:
+                  type: integer
+                  example: 86400
+                medium:
+                  type: integer
+                  example: 21600
+                low:
+                  type: integer
+                  example: 3600
+
+    StrategyConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [sequential_short_circuit, parallel_aggregate, parallel_race, adaptive]
+        sources:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              threshold:
+                type: integer
+              timeout:
+                type: integer
+        timeout:
+          type: integer
+          description: Overall strategy timeout
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+        - code
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error details
+        retryAfter:
+          type: integer
+          description: Seconds to wait before retrying (for rate limits)
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for user authentication
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []

@@ -1,0 +1,52 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+env:
+  NODE_VERSION: '20.x'
+  FRONTEND_PATH: 'frontend'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: '${{ env.FRONTEND_PATH }}/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ${{ env.FRONTEND_PATH }}
+      run: npm ci
+
+    - name: Lint code
+      working-directory: ${{ env.FRONTEND_PATH }}
+      run: npm run lint --if-present
+      continue-on-error: true
+
+    - name: Build frontend
+      working-directory: ${{ env.FRONTEND_PATH }}
+      run: npm run build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-dist
+        path: ${{ env.FRONTEND_PATH }}/dist
+        retention-days: 7
