@@ -29,6 +29,8 @@ infra/*.parameters.json
 infrastructure/deployment-credentials.txt
 infrastructure/sql-password.txt
 infrastructure/deployment-output.json
+infrastructure/app-settings.sh
+infrastructure/*.sh
 **/appsettings.Development.json
 **/appsettings.Local.json
 
